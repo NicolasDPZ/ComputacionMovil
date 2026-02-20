@@ -1,6 +1,7 @@
 package com.example.taller1entrega
 
 import android.R
+import android.R.color.background_light
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
@@ -118,19 +120,15 @@ fun MyTopBar() {
         },
 
         actions = {
-            IconButton(onClick = {
-                Log.i("TAG", "Call pressed")
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Call,
-                    contentDescription = "Call"
-                )
-            }
-        },
+            Icon(
+                imageVector = Icons.Filled.Menu,
+                contentDescription = "tres barritas",
+            )},
+
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Blue,
-            scrolledContainerColor = Color.Black
+            containerColor = colorResource(R.color.white),
+            scrolledContainerColor = Color.White
         )
     )
 }
@@ -160,40 +158,41 @@ fun MyFloatingActionButton() {
 @Composable
 fun Paises(modifier: Modifier = Modifier) {
 
-    Column(
-        modifier = Modifier
-            .background(colorResource(id = R.color.holo_purple))
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    )
+    Scaffold(
+        topBar = { MyTopBar() }
+    ) { paddingValues ->
 
-    {
-
-        ElevatedCard(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .padding(paddingValues)
+                .background(colorResource(id = R.color.holo_purple))
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Row(
+
+            ElevatedCard(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = "icono lindo",
-                    Modifier.size(30.dp)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = "icono lindo",
+                        modifier = Modifier.size(30.dp)
+                    )
 
-                Text(
-                    text = "hola buenas tardes",
-                    Modifier.padding(20.dp)
-
-                )
+                    Text(
+                        text = "hola buenas tardes",
+                        modifier = Modifier.padding(20.dp)
+                    )
+                }
             }
         }
-
     }
 }
 
