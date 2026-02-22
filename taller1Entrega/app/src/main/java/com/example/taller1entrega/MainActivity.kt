@@ -1,15 +1,15 @@
 package com.example.taller1entrega
 
-import android.R
-import android.R.color.background_light
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.lazy.items
+import com.example.taller1entrega.ui.theme.Country
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,14 +18,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -33,10 +32,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,12 +43,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.taller1entrega.ui.theme.Taller1EntregaTheme
 import com.example.taller1entrega.ui.theme.pantallas
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +89,7 @@ fun Home(
 
             Button(
                 onClick = {
-                    navController.navigate(pantallas.Paises.name)
+                    navController.navigate(pantallas.PantallaPaises.name)
                 },
 
                 modifier = Modifier.padding(all = 20.dp)
@@ -156,44 +157,69 @@ fun MyFloatingActionButton() {
 
 
 @Composable
-fun Paises(modifier: Modifier = Modifier) {
-
+fun PantallaPaises(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val countries = remember {
+        loadCountries(context)
+    }
     Scaffold(
         topBar = { MyTopBar() }
     ) { paddingValues ->
 
-        Column(
+        LazyColumn (
             modifier = Modifier
-                .padding(paddingValues)
-                .background(colorResource(id = R.color.holo_purple))
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(paddingValues),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-
-            ElevatedCard(
-                modifier = Modifier
+            items(items = countries){item ->
+                ElevatedCard (modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = "icono lindo",
-                        modifier = Modifier.size(30.dp)
-                    )
-
-                    Text(
-                        text = "hola buenas tardes",
-                        modifier = Modifier.padding(20.dp)
-                    )
+                    .padding(16.dp)) {
+                    Row (
+                        horizontalArrangement = Arrangement.
+                        spacedBy(10.dp,
+                            Alignment.Start),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = "icono lindo",
+                            modifier = Modifier.size(30.dp)
+                        )
+                        Text(item.toString(),
+                            fontSize = 25.sp
+                        )
+                    }
                 }
             }
         }
     }
+}
+fun loadCountries(context: Context): MutableList<Country> {
+
+    val countries = mutableListOf<Country>()
+
+    val json_string = context.assets
+        .open("paises.json")
+        .bufferedReader()
+        .use { it.readText() }
+
+    val json = JSONObject(json_string)
+    val paisesJsonArray = json.getJSONArray("paises")
+
+    for (i in 0..paisesJsonArray.length()-1) {
+
+        val jsonObject = paisesJsonArray.getJSONObject(i)
+
+        val capital = jsonObject.getString("capital")
+        val name = jsonObject.getString("nombre_pais")
+
+        val country = Country(name, capital)
+        countries.add(country)
+    }
+
+    return countries
 }
 
 
@@ -210,8 +236,8 @@ fun Navegacion() {
             Home(navController = navController)
         }
 
-        composable(route = pantallas.Paises.name) {
-            Paises()
+        composable(route = pantallas.PantallaPaises.name) {
+            PantallaPaises()
         }
     }
 
@@ -222,8 +248,8 @@ fun Navegacion() {
 @Composable
 fun GreetinPreview() {
     Taller1EntregaTheme {
-        Paises()
-//        Home( navController = rememberNavController())
+        PantallaPaises()
+//       Home( navController = rememberNavController())
     }
 }
 
