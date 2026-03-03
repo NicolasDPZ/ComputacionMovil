@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,8 +31,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.IconButton
 import org.json.JSONArray
-
 @Composable
 fun Drivers(modifier: Modifier = Modifier, navController: NavController) {
     val context = LocalContext.current
@@ -41,7 +41,7 @@ fun Drivers(modifier: Modifier = Modifier, navController: NavController) {
         CargarConductores(context)
     }
     Scaffold(
-        topBar = { TopbarDrivers() },
+        topBar = { TopbarDrivers(navController) },
         ) { padding ->
 
         LazyColumn (
@@ -54,7 +54,11 @@ fun Drivers(modifier: Modifier = Modifier, navController: NavController) {
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    onClick = {
+                        conductorSeleccionado = item
+                        navController.navigate("pilotodetalles")
+                    }
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(
@@ -65,18 +69,22 @@ fun Drivers(modifier: Modifier = Modifier, navController: NavController) {
                             .fillMaxWidth()
                     ) {
                         Icon(
-                            imageVector = Icons.Default.AssignmentInd,
+                            imageVector = Icons.Default.AccountCircle,
                             contentDescription = "icono lindo",
                             modifier = Modifier.size(30.dp)
                         )
                         Text(
-                            item.toString(),
-                            fontSize = 25.sp
+                            text = item.numero.toString(),
+                            fontSize = 20.sp
                         )
+                        Text(
+                            text = item.nombre,
+                            fontSize = 20.sp
+                        )
+
                     }
                 }
             }
-
         }
     }
 }
@@ -92,22 +100,40 @@ fun CargarConductores(context: Context): MutableList<Conductor>{
         val jsonObject = jsonArray.getJSONObject(i)
         val numero = jsonObject.getInt("driver_number")
         val nombre = jsonObject.getString("full_name")
-        conductores.add(Conductor(numero, nombre))
-    }
-
+        val foto = jsonObject.getString("headshot_url")
+        val acronimo = jsonObject.getString("name_acronym")
+        val equipo = jsonObject.getString("team_name")
+        val colorEquipo = jsonObject.getString( "team_colour")
+        conductores.add(
+            Conductor(
+                numero,
+                nombre,
+                foto,
+                acronimo,
+                equipo,
+                colorEquipo
+            )
+        )    }
     return conductores
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopbarDrivers() {
+fun TopbarDrivers(navController : NavController) {
     TopAppBar(
         navigationIcon = {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Devolverse al menú"
+            IconButton(
+                onClick = {
+                    navController.navigate (route = "pantallainicial")
+                }
             )
+            {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Devolverse al menú"
+                )
+            }
         },
         title = {
             Text(

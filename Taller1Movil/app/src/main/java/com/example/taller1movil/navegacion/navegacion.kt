@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.taller1movil.pantallas.Drivers
 import com.example.taller1movil.pantallas.Juego
 import com.example.taller1movil.pantallas.PantallaInicial
+import com.example.taller1movil.pantallas.Pilotodetalles
 
 
 @Composable
@@ -22,12 +23,16 @@ fun Navegacion() {
             PantallaInicial(navController = navController)
         }
 
-        composable(route = Pantallas.conductores.name){
-            Drivers(navController =navController)
+        composable(route = Pantallas.Drivers.name){
+            Drivers(navController = navController)
         }
 
         composable(route = Pantallas.juego.name){
-            Juego(navController=navController)
+            Juego(navController = navController)
+        }
+
+        composable (route = Pantallas.pilotodetalles.name){
+            Pilotodetalles(navController = navController)
         }
 
     }
