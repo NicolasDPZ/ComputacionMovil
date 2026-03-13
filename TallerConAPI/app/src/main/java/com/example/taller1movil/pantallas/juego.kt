@@ -1,6 +1,7 @@
 package com.example.taller1movil.pantallas
 
 import android.R
+import androidx.annotation.Nullable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -86,7 +87,7 @@ fun Juego(modifier: Modifier = Modifier, navController: NavController){
                 value = numeroIngresado,
                 onValueChange = { numeroIngresado = it },
                 enabled = !gano,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(). padding(12.dp)
             )
 
             Button(
@@ -103,16 +104,17 @@ fun Juego(modifier: Modifier = Modifier, navController: NavController){
                         }
                     }
                 },
-                enabled = !gano,
+                enabled = !gano && numeroIngresado.isNotEmpty(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Magenta,
                     contentColor = Color.White
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(12.dp)
 
             ){
                 Text(text = "Gess!!")
             }
+
 
             Spacer(modifier = Modifier.height(30.dp))
 
