@@ -94,6 +94,7 @@ fun Juego(modifier: Modifier = Modifier, navController: NavController){
                 onClick = {
                     val numero = numeroIngresado.toInt()
                     intentos++
+                    numeroIngresado=""
 
                     when {
                         numero < numeroAleatorio -> mensaje = "es mayor"
@@ -110,7 +111,6 @@ fun Juego(modifier: Modifier = Modifier, navController: NavController){
                     contentColor = Color.White
                 ),
                 modifier = Modifier.fillMaxWidth().padding(12.dp)
-
             ){
                 Text(text = "Gess!!")
             }
